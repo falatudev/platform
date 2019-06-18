@@ -1,32 +1,42 @@
 version: '3'
 
+# networks
+
+# services
 services:
+  
+  # editor
   falatu-editor:
     container_name: falatu-editor
     image: webdevops/php-nginx-dev:7.3
+    working_dir: /var/www/app
     volumes:
       - ./editor:/var/www/app
     environment:
       - WEB_DOCUMENT_ROOT=/var/www/app/public
-      - APPLICATION_PATH=/var/www/app
+      - WEB_DOCUMENT_INDEX=index.html
+      - WEB_ALIAS_DOMAIN=editor
       - PHP_MAX_EXECUTION_TIME=86400
     ports:
       - 8001:80
-      
+  
+  # home
   falatu-home:
     container_name: falatu-home
     image: webdevops/php-nginx-dev:7.3
+    working_dir: /var/www/app
     volumes:
       - ./home:/var/www/app
     environment:
       - WEB_DOCUMENT_ROOT=/var/www/app/public
-      - APPLICATION_PATH=/var/www/app
+      - WEB_DOCUMENT_INDEX=index.html
+      - WEB_ALIAS_DOMAIN=home
       - PHP_MAX_EXECUTION_TIME=86400
-#      - PHP_DEBUGGER="xdebug"
-#      export XDEBUG_REMOTE_HOST=$(ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
-#      - XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST}
-#      - XDEBUG_REMOTE_AUTOSTART=1
-#    expose:
-#      - 9000
+    #      - PHP_DEBUGGER="xdebug"
+    #      export XDEBUG_REMOTE_HOST=$(ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+    #      - XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST}
+    #      - XDEBUG_REMOTE_AUTOSTART=1
+    #    expose:
+    #      - 9000
     ports:
       - 8002:80

@@ -1,5 +1,6 @@
 version: '3'
 
+# networks
 networks:
   reverse-proxy:
     external:
@@ -7,7 +8,10 @@ networks:
   internal:
     driver: bridge
 
+# services
 services:
+
+  # editor
   falatu-editor:
     image: webdevops/php-nginx-dev:7.3
     container_name: falatu-editor
@@ -15,6 +19,7 @@ services:
     networks:
       - reverse-proxy
       - internal
+    working_dir: /var/www/app
     volumes:
       - ./editor:/var/www/app
     environment:
@@ -22,8 +27,11 @@ services:
       - LETSENCRYPT_HOST=editor.falatu.dev
       - LETSENCRYPT_EMAIL=wilcorrea@gmail.com
       - WEB_DOCUMENT_ROOT=/var/www/app/public
+      - WEB_DOCUMENT_INDEX=index.html
+      - WEB_ALIAS_DOMAIN=editor
       - APPLICATION_PATH=/var/www/app
 
+  # home
   falatu-home:
     image: webdevops/php-nginx-dev:7.3
     container_name: falatu-home
@@ -31,11 +39,14 @@ services:
     networks:
       - reverse-proxy
       - internal
+    working_dir: /var/www/app
     volumes:
-      - ./editor:/var/www/app
+      - ./home:/var/www/app
     environment:
       - VIRTUAL_HOST=falatu.dev
       - LETSENCRYPT_HOST=falatu.dev
       - LETSENCRYPT_EMAIL=wilcorrea@gmail.com
       - WEB_DOCUMENT_ROOT=/var/www/app/public
+      - WEB_DOCUMENT_INDEX=index.html
+      - WEB_ALIAS_DOMAIN=home
       - APPLICATION_PATH=/var/www/app
