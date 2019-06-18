@@ -4,28 +4,38 @@ networks:
   reverse-proxy:
     external:
       name: reverse-proxy
+  internal:
+    driver: bridge
 
 services:
-  falatu.dev-app:
-    image: webdevops/php-apache-dev:7.3
-#    build:
-#      dockerfile: ./.docker/app/Dockerfile
-#      context: .
-    container_name: falatu.dev-app
+  falatu-editor:
+    image: webdevops/php-nginx-dev:7.3
+    container_name: falatu-editor
     restart: always
     networks:
       - reverse-proxy
+      - internal
     volumes:
-      - .:/var/www/app
+      - ./editor:/var/www/app
+    environment:
+      - VIRTUAL_HOST=editor.falatu.dev
+      - LETSENCRYPT_HOST=editor.falatu.dev
+      - LETSENCRYPT_EMAIL=wilcorrea@gmail.com
+      - WEB_DOCUMENT_ROOT=/var/www/app/public
+      - APPLICATION_PATH=/var/www/app
+
+  falatu-home:
+    image: webdevops/php-nginx-dev:7.3
+    container_name: falatu-home
+    restart: always
+    networks:
+      - reverse-proxy
+      - internal
+    volumes:
+      - ./editor:/var/www/app
     environment:
       - VIRTUAL_HOST=falatu.dev
-      - WEB_DOCUMENT_ROOT="/var/www/app/public"
-#      - LETSENCRYPT_EMAIL=certificate@falatu.dev
-#      - LETSENCRYPT_HOST=falatu.dev
-#      - PHP_DEBUGGER="xdebug"
-#      export XDEBUG_REMOTE_HOST=$(ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
-#      - XDEBUG_REMOTE_HOST=${XDEBUG_REMOTE_HOST}
-#      - XDEBUG_REMOTE_AUTOSTART=1
-#    expose:
-#      - 9000
-
+      - LETSENCRYPT_HOST=falatu.dev
+      - LETSENCRYPT_EMAIL=wilcorrea@gmail.com
+      - WEB_DOCUMENT_ROOT=/var/www/app/public
+      - APPLICATION_PATH=/var/www/app
